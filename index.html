@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,20 @@
     <script src="https://kit.fontawesome.com/2e39f01719.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="*m-0 *p-0">
-    <div class="slide-coontainer w-full h-screen flex items-center justify-center bg-gray-200 ">
+    <div class="slide-coontainer w-full h-screen flex flex-col items-center gap-10 justify-start bg-gray-200 ">
+        <div class="mt-8">
+            <label for="number_of_img" class="text-center ml-4">Select Number of image :</label>
+            <select id="number_of_img " class="bg-white-200 w-full appearance-none px-2 outline-none		">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </div>
+
         <div id="slides"
-            class="slides w-4/5 h-2/5 md:h-3/5 xl:w-[50%] 2xl:h-3/5 2xl:w-2/4 bg-white m-auto shadow-[0_0_8px_2px_rgba(0,0,0,0.3)] rounded-md relative overflow-hidden">
+            class="slides w-4/5 h-2/5 md:h-3/5 xl:w-[50%] 2xl:h-3/5 2xl:w-2/4 bg-white mx-auto  shadow-[0_0_8px_2px_rgba(0,0,0,0.3)] rounded-md relative overflow-hidden">
             <div id="image-parent" class="w-full h-[100%] object-cover rounded-md">
             </div>
             <div
