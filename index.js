@@ -15,16 +15,42 @@ const arrayOfImages = [
   "/images/8.jpg",
   "/images/9.jpg",
 ];
+
+// Create dots corresponding to each image 
+const createDot = (index) => {
+  const dot = document.createElement("button");
+  dot.classList.add(
+    "btn",
+    "w-1",
+    "h-1",
+    "ml-1",
+    "rounded-[50%]",
+    "bg-gray-300",
+    "hover:bg-blue-400",
+    "2xl:w-4", "2xl:h-4",
+    "xl:w-3", "xl:h-3",
+    "md:w-2", "md:h-2"
+  );
+  dot.dataset.index = index; // Store index information in dataset
+  sliderDots.appendChild(dot);
+  // Add click event listener to the dot
+  dot.addEventListener("click", () => {
+    stopAutoSlider();      //stop outo slide when user click dot
+    slideCounter = index;        // Set counter to clicked index
+    slideImage();       // Slide to the selected image
+    autoSlide();       //stop outo slide when user click dot
+    showAndHideArrow();
+  });
+};
+
 // Variables to store image references and slide counter
 let allImage;
 let slideCounter = 0;
 
 // Function to add images to the slides
-const addImageInSlides = () => {
   arrayOfImages.forEach((img, index) => {
     const fromLeft = index * 100;
     const image = document.createElement("img");
-    // image.src = img.imageUrl;
     image.src = img;
     image.classList.add(
       "img",
@@ -41,14 +67,12 @@ const addImageInSlides = () => {
     );
     // Append image to the image section
     imageSection.appendChild(image);
+    createDot(index);
   });
 
   // Get all image elements
   allImage = document.getElementsByTagName("img");
-};
 
-// Call the function to add images to slides
-addImageInSlides();
 
 // Function to show/hide navigation arrows based on slide position
 const showAndHideArrow = () => {
@@ -58,12 +82,18 @@ const showAndHideArrow = () => {
   (slideCounter === 0) ? previousButton.classList.add("hidden") : previousButton.classList.remove("hidden");
 }
 
-
+const dots = sliderDots.querySelectorAll("button");
 // Function to slide images
 const slideImage = () => {
   for (let i = 0; i < allImage.length; i++) {
     let count = slideCounter * 100;
     allImage[i].style.transform = `translateX(-${count}%)`;
+    // change dots color corresponding to each image slide
+    if(slideCounter === i){
+        dots[i].classList.add("bg-blue-400");
+    }else{
+      dots[i].classList.remove("bg-blue-400")
+    }
   }
 };
 
@@ -99,97 +129,38 @@ const autoSlide = () => {
       slideCounter = 0;
     }
     showAndHideArrow();
-    highlightDot(slideCounter)
+    // highlightDot(slideCounter);
     slideImage();
   }, 3000);
 };
 
-// Start auto slide
+// Start auto slide that are use many time time
 autoSlide();
 
 // Event listener for next button click
 nextButton.addEventListener("click", () => {
+  stopAutoSlider();
   goToNextSlide();
-  highlightDot(slideCounter);
+  autoSlide();
 });
 
 // Event listener for pevious button click
 previousButton.addEventListener("click", () => {
+  stopAutoSlider()
   goToPreviousSlide();
-  highlightDot(slideCounter);
+  autoSlide();
 });
-
-// Create dots corresponding to each image
-arrayOfImages.forEach((img, index) => {
-  const dot = document.createElement("button");
-  dot.classList.add(
-    "btn",
-    "w-1",
-    "h-1",
-    "ml-1",
-    "rounded-[50%]",
-    "bg-gray-300",
-    "hover:bg-blue-400",
-    "2xl:w-4", "2xl:h-4",
-    "xl:w-3", "xl:h-3",
-    "md:w-2", "md:h-2"
-  );
-  dot.dataset.index = index; // Store index information in dataset
-  sliderDots.appendChild(dot);
-
-  // Add click event listener to each dot
-  dot.addEventListener("click", (e) => {
-    const clickedIndex = parseInt(e.target.dataset.index);
-    slideCounter = clickedIndex; // Set counter to clicked index
-    slideImage();// Slide to the selected image
-    highlightDot(slideCounter);
-    showAndHideArrow()
-  });
-});
-
-// Function to highlight the current dot
-const highlightDot = (index) => {
-  const dots = sliderDots.querySelectorAll("button");
-  dots.forEach((dot, i) => {
-    if (i === index) {
-      dot.classList.add("bg-blue-400"); // Add active class to current dot
-    } else {
-      dot.classList.remove("bg-blue-400"); // Remove active class from other dots
-    }
-  });
-};
-
+//stop outoslider when user click left or right button
+const stopAutoSlider = () => {
+  clearInterval(intervalRef);
+}
 // Function to initialize the slider when the page loads
 const initializeSlider = () => {
-  slideImage(); // Show the first image
-  highlightDot(slideCounter); // Highlight the corresponding dot
   showAndHideArrow()
-};
+  dots[0].classList.add("bg-blue-400");
 
+};
 // Call the initializeSlider function when the page loads
 window.addEventListener('load', initializeSlider);
 
-// Event listener for next button hover
-previousButton.addEventListener("mouseenter", () => {
-  clearInterval(intervalRef);
-})
-// Event listener for previous button hover
-previousButton.addEventListener("mouseleave", () => {
-  autoSlide();
-})
-// Event listener for next button remove hover
-nextButton.addEventListener("mouseenter", () => {
-  clearInterval(intervalRef);
-})
-// Event listener for next button remove hover
-nextButton.addEventListener("mouseleave", () => {
-  autoSlide();
-})
-// Event listener for dots button remove hover
-sliderDots.addEventListener("mouseenter", () => {
-  clearInterval(intervalRef);
-})
-sliderDots.addEventListener("mouseleave", () => {
-  autoSlide();
-})
 
