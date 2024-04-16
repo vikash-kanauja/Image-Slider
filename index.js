@@ -1,5 +1,5 @@
 const imageSection = document.getElementById("image-parent");
-const dotsContainer = document.getElementById("slides_dots");
+const sliderDots = document.getElementById("slides_dots");
 const nextButton = document.querySelector(".next");
 const previousButton = document.querySelector(".prev");
 const slidesContainer = document.getElementById("slides")
@@ -43,7 +43,7 @@ const addImageInSlides = () => {
     imageSection.appendChild(image);
   });
 
-   // Get all image elements
+  // Get all image elements
   allImage = document.getElementsByTagName("img");
 };
 
@@ -52,7 +52,7 @@ addImageInSlides();
 
 // Function to show/hide navigation arrows based on slide position
 const showAndHideArrow = () => {
-// Show or hide next button based on slide position
+  // Show or hide next button based on slide position
   (slideCounter === allImage.length - 1) ? nextButton.classList.add("hidden") : nextButton.classList.remove("hidden");
   // Show or hide previous button based on slide position
   (slideCounter === 0) ? previousButton.classList.add("hidden") : previousButton.classList.remove("hidden");
@@ -68,7 +68,7 @@ const slideImage = () => {
 };
 
 // Function to go to the previous slide
-const goPreviousSlide = () => {
+const goToPreviousSlide = () => {
   slideCounter--;
   if (slideCounter < 0) {
     slideCounter = 0;
@@ -78,7 +78,7 @@ const goPreviousSlide = () => {
 };
 
 // Function to go to the next slide
-const goNextSlide = () => {
+const goToNextSlide = () => {
   slideCounter++;
   if (slideCounter > arrayOfImages.length - 1) {
     slideCounter = arrayOfImages.length - 1;
@@ -101,7 +101,7 @@ const autoSlide = () => {
     showAndHideArrow();
     highlightDot(slideCounter)
     slideImage();
-  }, 5000);
+  }, 3000);
 };
 
 // Start auto slide
@@ -109,13 +109,13 @@ autoSlide();
 
 // Event listener for next button click
 nextButton.addEventListener("click", () => {
-  goNextSlide();
+  goToNextSlide();
   highlightDot(slideCounter);
 });
 
 // Event listener for pevious button click
 previousButton.addEventListener("click", () => {
-  goPreviousSlide();
+  goToPreviousSlide();
   highlightDot(slideCounter);
 });
 
@@ -135,20 +135,21 @@ arrayOfImages.forEach((img, index) => {
     "md:w-2", "md:h-2"
   );
   dot.dataset.index = index; // Store index information in dataset
-  dotsContainer.appendChild(dot);
+  sliderDots.appendChild(dot);
 
   // Add click event listener to each dot
   dot.addEventListener("click", (e) => {
     const clickedIndex = parseInt(e.target.dataset.index);
     slideCounter = clickedIndex; // Set counter to clicked index
     slideImage();// Slide to the selected image
-    highlightDot(slideCounter)
+    highlightDot(slideCounter);
+    showAndHideArrow()
   });
 });
 
 // Function to highlight the current dot
 const highlightDot = (index) => {
-  const dots = dotsContainer.querySelectorAll("button");
+  const dots = sliderDots.querySelectorAll("button");
   dots.forEach((dot, i) => {
     if (i === index) {
       dot.classList.add("bg-blue-400"); // Add active class to current dot
@@ -163,7 +164,6 @@ const initializeSlider = () => {
   slideImage(); // Show the first image
   highlightDot(slideCounter); // Highlight the corresponding dot
   showAndHideArrow()
-
 };
 
 // Call the initializeSlider function when the page loads
@@ -177,24 +177,19 @@ previousButton.addEventListener("mouseenter", () => {
 previousButton.addEventListener("mouseleave", () => {
   autoSlide();
 })
-
 // Event listener for next button remove hover
 nextButton.addEventListener("mouseenter", () => {
   clearInterval(intervalRef);
 })
-
 // Event listener for next button remove hover
 nextButton.addEventListener("mouseleave", () => {
-  //  intervalRef= setInterval(autoSlide, 5000);
   autoSlide();
 })
-
 // Event listener for dots button remove hover
-dotsContainer.addEventListener("mouseenter", () => {
+sliderDots.addEventListener("mouseenter", () => {
   clearInterval(intervalRef);
 })
-
-dotsContainer.addEventListener("mouseleave", () => {
+sliderDots.addEventListener("mouseleave", () => {
   autoSlide();
 })
 
