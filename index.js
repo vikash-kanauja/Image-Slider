@@ -12,7 +12,7 @@ const arrayOfImages = [
   "/images/3.jpg",
   "/images/4.jpg",
   "/images/5.jpg",
-  "/images/6.jpg"
+  "/images/6.jpg",
 ];
 
 let imageIndex = 0;
@@ -99,7 +99,7 @@ const showAndHideArrow = () => {
 const dots = sliderDots.querySelectorAll("button");
 // Function to slide images
 
-var count = 0;
+let count = 0;
 const imageSlide = () => {
   const numberOfSlideCycle = Math.ceil(arrayOfImages.length / (numberOfImage.selectedIndex + 1));
   const frameWidthPercentage = 100 / (numberOfImage.selectedIndex + 1);
