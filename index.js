@@ -12,7 +12,7 @@ const arrayOfImages = [
   "/images/3.jpg",
   "/images/4.jpg",
   "/images/5.jpg",
-  "/images/6.jpg",
+  "/images/6.jpg"
 ];
 
 let imageIndex = 0;
@@ -41,7 +41,6 @@ const createDot = () => {
     stopAutoSlider();      //stop outo slide when user click dot
     imageIndex = i;      // Set counter to clicked index
     imageSlide();       // Slide to the selected image
-    autoSlide();       //start outo slide when user click dot
     showAndHideArrow();
   });
 }
@@ -178,14 +177,14 @@ autoSlide();
 nextButton.addEventListener("click", () => {
   stopAutoSlider();
   goToNextSlide();
-  autoSlide();
+  imageSlide();
 });
 
 // Event listener for pevious button click
 previousButton.addEventListener("click", () => {
   stopAutoSlider();
   goToPreviousSlide();
-  autoSlide();
+  imageSlide();
 });
 //stop outoslider when user click left or right button
 const stopAutoSlider = () => {
@@ -198,3 +197,13 @@ const initializeSlider = () => {
 };
 // Call the initializeSlider function when the page loads
 window.addEventListener('load', initializeSlider);
+
+//Stop slide when mouse hover
+
+slidesContainer.addEventListener("mouseenter",()=>{
+  clearInterval(intervalRef);
+
+})
+slidesContainer.addEventListener("mouseleave",()=>{
+  autoSlide();
+})
