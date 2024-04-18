@@ -4,6 +4,7 @@ const nextButton = document.querySelector(".next");
 const previousButton = document.querySelector(".prev");
 const slidesContainer = document.getElementById("slides");
 const numberOfImage = document.getElementById("number_of_img");
+
 // Array of image URLs
 const arrayOfImages = [
   "/images/1.jpg",
@@ -14,13 +15,11 @@ const arrayOfImages = [
   "/images/6.jpg",
 ];
 
-let numberOfImagesInAFrame = 1;
-
 let imageIndex = 0;
 let imageSliderDots = [];
 // Create dots based on number of frame . 
 const createDot = () => {
-  const numberOfDots = Math.ceil(arrayOfImages.length / numberOfImagesInAFrame);
+  const numberOfDots = Math.ceil(arrayOfImages.length / (numberOfImage.selectedIndex + 1));
   for (let i = 0; i < numberOfDots; i++) {
   const dot = document.createElement("button");
   dot.classList.add(
@@ -80,7 +79,6 @@ let allImage;
   // Event listen for select box that will be number of image in one frame
   numberOfImage.addEventListener("change", (e) => {
     e.preventDefault();
-    numberOfImagesInAFrame = numberOfImage.selectedIndex + 1;
     sliderDots.innerHTML = "";
     imageSliderDots = [];
     imageIndex = 0;
@@ -104,18 +102,18 @@ const dots = sliderDots.querySelectorAll("button");
 
 var count = 0;
 const imageSlide = () => {
-  const numberOfSlideCycle = Math.ceil(arrayOfImages.length / numberOfImagesInAFrame);
-  const frameWidthPercentage = 100 / numberOfImagesInAFrame;
+  const numberOfSlideCycle = Math.ceil(arrayOfImages.length / (numberOfImage.selectedIndex + 1));
+  const frameWidthPercentage = 100 / (numberOfImage.selectedIndex + 1);
 
   // slide frame based on select option
   allImage.forEach((slide, i) => {
     slide.style.width = `${frameWidthPercentage}%`;
     slide.style.left = `${i * frameWidthPercentage}%`;
-    if (numberOfImagesInAFrame == 3 && count < numberOfSlideCycle) {
+    if ((numberOfImage.selectedIndex + 1) == 3 && count < numberOfSlideCycle) {
       slide.style.transform = `translateX(-${imageIndex * 300}%)`;
-    } else if (numberOfImagesInAFrame == 2 && count < numberOfSlideCycle) {
+    } else if ((numberOfImage.selectedIndex + 1) == 2 && count < numberOfSlideCycle) {
       slide.style.transform = `translateX(-${imageIndex * 200}%)`;
-    } else if (numberOfImagesInAFrame == 1 && count < numberOfSlideCycle) {
+    } else if ((numberOfImage.selectedIndex + 1) == 1 && count < numberOfSlideCycle) {
       slide.style.transform = `translateX(-${imageIndex * 100}%)`;
     } else {
       return;
