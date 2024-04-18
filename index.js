@@ -2,7 +2,8 @@ const imageSection = document.getElementById("image-parent");
 const sliderDots = document.getElementById("slides_dots");
 const nextButton = document.querySelector(".next");
 const previousButton = document.querySelector(".prev");
-const slidesContainer = document.getElementById("slides")
+const slidesContainer = document.getElementById("slides");
+const numberOfImage = document.getElementById("number_of_img");
 // Array of image URLs
 const arrayOfImages = [
   "/images/1.jpg",
@@ -11,13 +12,16 @@ const arrayOfImages = [
   "/images/4.jpg",
   "/images/5.jpg",
   "/images/6.jpg",
-  "/images/7.jpg",
-  "/images/8.jpg",
-  "/images/9.jpg",
 ];
 
-// Create dots corresponding to each image 
-const createDot = (index) => {
+let numberOfImagesInAFrame = 1;
+
+let imageIndex = 0;
+let imageSliderDots = [];
+// Create dots based on number of frame . 
+const createDot = () => {
+  const numberOfDots = Math.ceil(arrayOfImages.length / numberOfImagesInAFrame);
+  for (let i = 0; i < numberOfDots; i++) {
   const dot = document.createElement("button");
   dot.classList.add(
     "btn",
@@ -31,21 +35,25 @@ const createDot = (index) => {
     "xl:w-3", "xl:h-3",
     "md:w-2", "md:h-2"
   );
-  dot.dataset.index = index; // Store index information in dataset
+  // dot.dataset.index = index; // Store index information in dataset
   sliderDots.appendChild(dot);
+  imageSliderDots.push(dot);
   // Add click event listener to the dot
   dot.addEventListener("click", () => {
     stopAutoSlider();      //stop outo slide when user click dot
-    slideCounter = index;        // Set counter to clicked index
-    slideImage();       // Slide to the selected image
-    autoSlide();       //stop outo slide when user click dot
+    // slideCounter = index; 
+    imageIndex = i;      // Set counter to clicked index
+    imageSlide();       // Slide to the selected image
+    autoSlide();       //start outo slide when user click dot
     showAndHideArrow();
   });
+}
 };
+createDot();
+
 
 // Variables to store image references and slide counter
 let allImage;
-let slideCounter = 0;
 
 // Function to add images to the slides
   arrayOfImages.forEach((img, index) => {
@@ -57,7 +65,6 @@ let slideCounter = 0;
       "w-full",
       "h-[100%]",
       "object-cover",
-      "rounded-md",
       "absolute",
       "mr-2",
       `left-[${fromLeft}%]`,
@@ -67,70 +74,104 @@ let slideCounter = 0;
     );
     // Append image to the image section
     imageSection.appendChild(image);
-    createDot(index);
   });
+  
 
   // Get all image elements
-  allImage = document.getElementsByTagName("img");
-
+  allImage = document.querySelectorAll("img");
+  // Event listen for select box that will be number of image in one frame
+  numberOfImage.addEventListener("change", (e) => {
+    e.preventDefault();
+    numberOfImagesInAFrame = numberOfImage.selectedIndex + 1;
+    sliderDots.innerHTML = "";
+    imageSliderDots = [];
+    imageIndex = 0;
+    count = 0;
+    numberOfDots = 0;
+    createDot();
+    imageSlide();
+    showAndHideArrow();
+  });
 
 // Function to show/hide navigation arrows based on slide position
 const showAndHideArrow = () => {
   // Show or hide next button based on slide position
-  (slideCounter === allImage.length - 1) ? nextButton.classList.add("hidden") : nextButton.classList.remove("hidden");
+  (imageIndex === imageSliderDots.length - 1) ? nextButton.classList.add("hidden") : nextButton.classList.remove("hidden");
   // Show or hide previous button based on slide position
-  (slideCounter === 0) ? previousButton.classList.add("hidden") : previousButton.classList.remove("hidden");
+  (imageIndex === 0) ? previousButton.classList.add("hidden") : previousButton.classList.remove("hidden");
 }
 
 const dots = sliderDots.querySelectorAll("button");
 // Function to slide images
-const slideImage = () => {
-  for (let i = 0; i < allImage.length; i++) {
-    let count = slideCounter * 100;
-    allImage[i].style.transform = `translateX(-${count}%)`;
-    // change dots color corresponding to each image slide
-    if(slideCounter === i){
-        dots[i].classList.add("bg-blue-400");
-    }else{
-      dots[i].classList.remove("bg-blue-400")
+
+var count = 0;
+const imageSlide = () => {
+  const numberOfSlideCycle = Math.ceil(arrayOfImages.length / numberOfImagesInAFrame);
+  const frameWidthPercentage = 100 / numberOfImagesInAFrame;
+
+  // Slide image based on select option
+  allImage.forEach((slide, i) => {
+    slide.style.width = `${frameWidthPercentage}%`;
+    slide.style.left = `${i * frameWidthPercentage}%`;
+    if (numberOfImagesInAFrame == 3 && count < numberOfSlideCycle) {
+      slide.style.transform = `translateX(-${imageIndex * 300}%)`;
+    } else if (numberOfImagesInAFrame == 2 && count < numberOfSlideCycle) {
+      slide.style.transform = `translateX(-${imageIndex * 200}%)`;
+    } else if (numberOfImagesInAFrame == 1 && count < numberOfSlideCycle) {
+      slide.style.transform = `translateX(-${imageIndex * 100}%)`;
+    } else {
+      return;
     }
+  });
+  if (count >= numberOfSlideCycle) {
+    count = 0;
+  } else {
+    count++;
   }
+
+  sliderDotHandler();
+  showAndHideArrow();
+};
+// This function are use to change the dots color
+const sliderDotHandler = () => {
+  imageSliderDots.forEach((dot, index) => {
+    (imageIndex) === index
+      ? dot.classList.add("bg-blue-400") 
+      : dot.classList.remove("bg-blue-400");
+  });
 };
 
 // Function to go to the previous slide
 const goToPreviousSlide = () => {
-  slideCounter--;
-  if (slideCounter < 0) {
-    slideCounter = 0;
+  imageIndex--;
+  if (imageIndex < 0) {
+    imageIndex = 0;
   }
+  imageSlide();
   showAndHideArrow();
-  slideImage();
 };
 
 // Function to go to the next slide
 const goToNextSlide = () => {
-  slideCounter++;
-  if (slideCounter > arrayOfImages.length - 1) {
-    slideCounter = arrayOfImages.length - 1;
+  if (imageIndex >= imageSliderDots.length - 1) {
+       return imageIndex;
   }
+  imageIndex++;
+  imageSlide();
   showAndHideArrow();
-  slideImage();
 };
 
 // Reference variable for auto slide interval
-let intervalRef
+let intervalRef=null;
 
-// function for auto image Slide after 5s delay. 
+// function for auto image Slide after 3s delay. 
 const autoSlide = () => {
   intervalRef = setInterval(() => {
-    slideCounter++;
+    if (imageIndex === imageSliderDots.length - 1) imageIndex = -1;
+    imageIndex++;
+    imageSlide();
+    count = 0;
     showAndHideArrow();
-    if (slideCounter >= arrayOfImages.length) {
-      slideCounter = 0;
-    }
-    showAndHideArrow();
-    // highlightDot(slideCounter);
-    slideImage();
   }, 3000);
 };
 
@@ -146,7 +187,7 @@ nextButton.addEventListener("click", () => {
 
 // Event listener for pevious button click
 previousButton.addEventListener("click", () => {
-  stopAutoSlider()
+  stopAutoSlider();
   goToPreviousSlide();
   autoSlide();
 });
@@ -158,9 +199,6 @@ const stopAutoSlider = () => {
 const initializeSlider = () => {
   showAndHideArrow()
   dots[0].classList.add("bg-blue-400");
-
 };
 // Call the initializeSlider function when the page loads
 window.addEventListener('load', initializeSlider);
-
-
