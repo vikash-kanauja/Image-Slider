@@ -35,13 +35,11 @@ const createDot = () => {
     "xl:w-3", "xl:h-3",
     "md:w-2", "md:h-2"
   );
-  // dot.dataset.index = index; // Store index information in dataset
   sliderDots.appendChild(dot);
   imageSliderDots.push(dot);
   // Add click event listener to the dot
   dot.addEventListener("click", () => {
     stopAutoSlider();      //stop outo slide when user click dot
-    // slideCounter = index; 
     imageIndex = i;      // Set counter to clicked index
     imageSlide();       // Slide to the selected image
     autoSlide();       //start outo slide when user click dot
@@ -109,7 +107,7 @@ const imageSlide = () => {
   const numberOfSlideCycle = Math.ceil(arrayOfImages.length / numberOfImagesInAFrame);
   const frameWidthPercentage = 100 / numberOfImagesInAFrame;
 
-  // Slide image based on select option
+  // slide frame based on select option
   allImage.forEach((slide, i) => {
     slide.style.width = `${frameWidthPercentage}%`;
     slide.style.left = `${i * frameWidthPercentage}%`;
